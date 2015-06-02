@@ -345,36 +345,36 @@ function drawborder() {
     // Left-vertical
     if (player.x <= screenWidth/2) {
         graph.beginPath();
-        graph.moveTo(screenWidth/2 - player.x, 0 ? player.y > screenHeight/2 : screenHeight/2 - player.y);
-        graph.lineTo(screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.strokeStyle = "#000000";
+        graph.moveTo(screenWidth/2 - player.x - player.mass - playerConfig.defaultSize, 0 ? player.y > screenHeight/2 : screenHeight/2 - player.y - player.mass - playerConfig.defaultSize);
+        graph.lineTo(screenWidth/2 - player.x - player.mass - playerConfig.defaultSize, gameHeight + screenHeight/2 - player.y + player.mass + playerConfig.defaultSize);
+        graph.strokeStyle = "#aaa";
         graph.stroke();
     }
 
     // Top-horizontal
     if (player.y <= screenHeight/2) {
         graph.beginPath();
-        graph.moveTo(0 ? player.x > screenWidth/2 : screenWidth/2 - player.x, screenHeight/2 - player.y);
-        graph.lineTo(gameWidth + screenWidth/2 - player.x, screenHeight/2 - player.y);
-        graph.strokeStyle = "#000000";
+        graph.moveTo(0 ? player.x > screenWidth/2 : screenWidth/2 - player.x - player.mass - playerConfig.defaultSize, screenHeight/2 - player.y - player.mass - playerConfig.defaultSize);
+        graph.lineTo(gameWidth + screenWidth/2 + player.mass + playerConfig.defaultSize - player.x , screenHeight/2 - player.y - player.mass - playerConfig.defaultSize);
+        graph.strokeStyle = "#aaa";
         graph.stroke();
     }
 
     // Right-vertical
     if (gameWidth - player.x <= screenWidth/2) {
         graph.beginPath();
-        graph.moveTo(gameWidth + screenWidth/2 - player.x, screenHeight/2 - player.y);
-        graph.lineTo(gameWidth + screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.strokeStyle = "#000000";
+        graph.moveTo(gameWidth + screenWidth/2 - player.x + player.mass + playerConfig.defaultSize, screenHeight/2 - player.y - player.mass - playerConfig.defaultSize);
+        graph.lineTo(gameWidth + screenWidth/2 - player.x + player.mass + playerConfig.defaultSize, gameHeight + screenHeight/2 - player.y + player.mass + playerConfig.defaultSize);
+        graph.strokeStyle = "#aaa";
         graph.stroke();
     }
 
     // Bottom-horizontal
     if (gameHeight - player.y <= screenHeight/2) {
         graph.beginPath();
-        graph.moveTo(gameWidth + screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.lineTo(screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.strokeStyle = "#000000";
+        graph.moveTo(gameWidth + screenWidth/2 - player.x + player.mass + playerConfig.defaultSize, gameHeight + screenHeight/2 - player.y + player.mass + playerConfig.defaultSize);
+        graph.lineTo(screenWidth/2 - player.x - player.mass - playerConfig.defaultSize, gameHeight + screenHeight/2 - player.y + player.mass + playerConfig.defaultSize);
+        graph.strokeStyle = "#aaa";
         graph.stroke();
     }
 }
