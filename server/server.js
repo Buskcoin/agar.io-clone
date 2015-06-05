@@ -7,6 +7,7 @@ var fs = require('fs');
 var SAT = require('sat');
 
 var config = require('./config.json');
+var box2d = require('box2dweb.js')
 
 var users = [];
 var foods = [];
@@ -106,7 +107,7 @@ function movePlayer(player, target) {
        deg = Math.atan2(target.y - player.screenHeight / 2, target.x - player.screenWidth / 2);
 
     //Slows player as mass increases.
-    var slowDown = ((player.mass + 1)/17) + 1;
+    var slowDown = ((player.mass * player.mass + 1)/1000) + 1;
 
 	var deltaY = player.speed * Math.sin(deg)/ slowDown;
 	var deltaX = player.speed * Math.cos(deg)/ slowDown;
@@ -117,10 +118,44 @@ function movePlayer(player, target) {
     }
 
     var borderCalc = defaultPlayerSize + player.mass - 15;
+    
+    //how smoothly the cell will retreat from the wall.
+    var bounceBack = 2;
 
-    player.y += (player.y + deltaY >= borderCalc && player.y + deltaY <= player.gameHeight - borderCalc) ? deltaY : 0;
-    player.x += (player.x + deltaX >= borderCalc && player.x + deltaX <= player.gameWidth - borderCalc) ? deltaX : 0;
+    if(player.y + deltaY  > borderCalc && player.y + deltaY < player.gameHeight - borderCalc) {
+            player.y += deltaY;
+        }
+        else if (player.y + deltaY < borderCalc ){
+            player.y += (borderCalc - (player.y + deltaY))/bounceBack;
+            console.log(borderCalc - (player.y + deltaY));
+        }
+        else if(player.y + deltaY > player.gameHeight - borderCalc ){
+            player.y += (player.gameHeight - borderCalc - (player.y + deltaY))/bounceBack;
+        }
+        else{
+            player.y += 0;
+        }
+
+
+    if(player.x + deltaX >= borderCalc && player.x + deltaX <= player.gameWidth - borderCalc ) {
+    player.x += deltaX;
+        }
+        else if (player.x + deltaX < borderCalc ){
+            player.x += (borderCalc - (player.x + deltaX))/bounceBack;
+        }
+        else if(player.x + deltaX > player.gameWidth - borderCalc ){
+            player.x += (player.gameWidth - borderCalc - (player.x + deltaX))/bounceBack;
+        }
+        else{
+            player.x += 0;
+        }
+
+
+   // player.y += (player.y + deltaY > borderCalc && player.y + deltaY < player.gameHeight - borderCalc) ? deltaY : 0;
+    //player.x += (player.x + deltaX > borderCalc && player.x + deltaX < player.gameWidth - borderCalc) ? deltaX : 0;
 }
+
+
 
 
 io.on('connection', function (socket) {

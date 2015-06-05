@@ -65,8 +65,8 @@ window.onload = function() {
 // Canvas
 var screenWidth = window.innerWidth;
 var screenHeight = window.innerHeight;
-var gameWidth = screenWidth * 10;
-var gameHeight = screenHeight * 10;
+var gameWidth = screenWidth * 2;
+var gameHeight = screenHeight * 2;
 var xoffset = -gameWidth;
 var yoffset = -gameHeight;
 
@@ -79,7 +79,6 @@ var startPingTime = 0;
 
 var chatCommands = {};
 var backgroundColor = '#EEEEEE';
-
 var foodConfig = {
     border: 0,
     borderColor: '#f39c12',
@@ -402,7 +401,20 @@ function drawEnemy(enemy) {
 }
 
 function drawgrid(){
-    for (var x = xoffset; x < screenWidth; x += screenHeight / 20) {
+    graph.strokeStyle = '#ddd';
+    b = gameWidth;
+    c = gameHeight;
+    x = player.x/2;
+    y = player.y/2;
+    for (var i = -.5 + (-player.x + b / 2) % 50; i < b; i += 50) 
+        graph.beginPath(), graph.moveTo(i, 0), graph.lineTo(i, c), graph.stroke();
+        
+    for (var i = -.5 + (-player.y + c / 2) % 50; i < c; i += 50) 
+        graph.beginPath(), graph.moveTo(0, i), graph.lineTo(b, i), graph.stroke();
+
+    graph.restore();
+        
+    for (var x = -5 + player.x; x < screenWidth; x += screenHeight / 20) {
         graph.moveTo(x, 0);
         graph.lineTo(x, screenHeight);
     }
@@ -413,6 +425,16 @@ function drawgrid(){
     }
 
     graph.strokeStyle = '#ddd';
+    //graph.stroke();
+}
+
+function drawCell() {
+    graph.strokeStyle = '#006400';
+    graph.fillStyle = 'green';
+    graph.lineWidth = enemyConfig.border;
+    graph.beginPath();
+    graph.arc(Math.random() * 100 + screenWidth / 2, screenHeight / 2, Math.random()*100, 0, 2 * Math.PI);
+    graph.fill();
     graph.stroke();
 }
 
@@ -427,7 +449,7 @@ function drawborder() {
         graph.beginPath();
         graph.moveTo(screenWidth/2 - player.x, 0 ? player.y > screenHeight/2 : screenHeight/2 - player.y);
         graph.lineTo(screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.strokeStyle = "#000000";
+        graph.strokeStyle = "#aaa";
         graph.stroke();
     }
 
@@ -436,7 +458,7 @@ function drawborder() {
         graph.beginPath();
         graph.moveTo(0 ? player.x > screenWidth/2 : screenWidth/2 - player.x, screenHeight/2 - player.y);
         graph.lineTo(gameWidth + screenWidth/2 - player.x, screenHeight/2 - player.y);
-        graph.strokeStyle = "#000000";
+        graph.strokeStyle = "#aaa";
         graph.stroke();
     }
 
@@ -445,7 +467,7 @@ function drawborder() {
         graph.beginPath();
         graph.moveTo(gameWidth + screenWidth/2 - player.x, screenHeight/2 - player.y);
         graph.lineTo(gameWidth + screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.strokeStyle = "#000000";
+        graph.strokeStyle = "#aaa";
         graph.stroke();
     }
 
@@ -454,7 +476,7 @@ function drawborder() {
         graph.beginPath();
         graph.moveTo(gameWidth + screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
         graph.lineTo(screenWidth/2 - player.x, gameHeight + screenHeight/2 - player.y);
-        graph.strokeStyle = "#000000";
+        graph.strokeStyle = "#aaa";
         graph.stroke();
     }
 }
