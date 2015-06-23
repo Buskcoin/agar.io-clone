@@ -513,7 +513,7 @@
             x: screenWidth / 2,
             y: screenHeight / 2
         };
-        var points = 10;
+        var points = 10 + player.mass/2;
         var increase = Math.PI * 2 / points;
 
         graph.strokeStyle = 'hsl(' + player.hue + ', 80%, 40%)';
@@ -523,7 +523,7 @@
         var xstore = [];
         var ystore = [];
 
-        spin += 0.1;
+        spin += 0.5;
 
         for (var i = 0; i < points; i++) {
 
@@ -534,8 +534,7 @@
 
             spin += increase;
 
-            graph.lineJoin = 'round';
-            graph.lineCap = 'round';
+         
 
             xstore[i] = x;
             ystore[i] = y;
@@ -543,8 +542,8 @@
         }
         
         for (var i = 0; i < points ; ++i){
-             console.log("x: "+xstore[i]);
-             console.log(" y: " +ystore[i]);
+            var c = i % points;
+            console.log(c);
              if (i == 0) {
                 graph.beginPath();
                 graph.moveTo(xstore[i], ystore[i]);
@@ -553,16 +552,17 @@
             else if (i > 0 && i < points-1) {
 
 
-                graph.quadraticCurveTo(xstore[i], ystore[i], (xstore[i] + xstore[i+1])/2, (ystore[i] + ystore[i+1])/2);
-
+                graph.lineTo(xstore[i]  , ystore[i] ) ;
             } else {
-                graph.quadraticCurveTo(xstore[i], ystore[i], (xstore[i] + xstore[0])/2, (ystore[i] + ystore[0])/2);
-                graph.quadraticCurveTo(xstore[0], ystore[0], xstore[1] , ystore[1]);
+                graph.lineTo(xstore[i], ystore[i] );
+                graph.lineTo(xstore[0], ystore[0]);
                 //graph.arc(circle.x, circle.y, radius, 0, 2 * Math.PI);
                 //graph.lineTo(xstore[0],ystore[0])
             }
             
         }
+            graph.lineJoin = 'round';
+            graph.lineCap = 'round';
             graph.fill();
             graph.stroke();
         
