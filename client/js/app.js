@@ -146,7 +146,7 @@
     c.addEventListener('mouseout', outOfBounds, false);
 
     // register when the mouse goes off the canvas
-    function ensureValueInRange() {
+    function outOfBounds() {
         if (!continuity) {
             target = { x : 0, y: 0 };
         }
@@ -473,7 +473,7 @@
         graph.strokeStyle = food.color.border || foodConfig.borderColor;
         graph.fillStyle = food.color.fill || foodConfig.fillColor;
         graph.lineWidth = foodConfig.border;
-        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(foodConfig.mass) * 2, 9);
+        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(foodConfig.mass) * 2 + Math.random() - 0.5, );
     }
 
     function drawPlayer() {
@@ -501,8 +501,8 @@
 
             x = radius * Math.cos(spin) + circle.x;
             y = radius * Math.sin(spin) + circle.y;
-            x = contain(-player.x + screenWidth / 2, gameWidth - player.x + screenWidth / 2, x);
-            y = contain(-player.y + screenHeight / 2, gameHeight - player.y + screenHeight / 2, y);
+            x = valueInRange(-player.x + screenWidth / 2, gameWidth - player.x + screenWidth / 2, x);
+            y = valueInRange(-player.y + screenHeight / 2, gameHeight - player.y + screenHeight / 2, y);
 
             spin += increase;
 
@@ -554,7 +554,7 @@
         }
     }
 
-    function contain(min, max, value) {
+    function valueInRange(min, max, value) {
         return Math.min(max, Math.max(min, value));
     }
 
