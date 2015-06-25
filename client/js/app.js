@@ -99,7 +99,7 @@
     var startPingTime = 0;
 
     var chatCommands = {};
-    var backgroundColor = '#EEEEEE';
+    var backgroundColor = '#f2fbff';
 
     var toggleMassState = 0;
 
@@ -111,7 +111,7 @@
     };
 
     var playerConfig = {
-        border: 5,
+        border: 7,
         textColor: '#FFFFFF',
         textBorder: '#000000',
         textBorderSize: 3,
@@ -446,7 +446,7 @@
     }
 
     function massToRadius(mass) {
-        return Math.sqrt(mass / Math.PI) * 10;
+        return Math.sqrt(mass / Math.PI) * 13;
     }
 
     function drawCircle(centerX, centerY, radius, sides) {
@@ -469,10 +469,11 @@
     }
 
     function drawFood(food) {
+
         graph.strokeStyle = food.color.border || foodConfig.borderColor;
         graph.fillStyle = food.color.fill || foodConfig.fillColor;
         graph.lineWidth = foodConfig.border;
-        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(foodConfig.mass), 10);
+        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(foodConfig.mass) * 2 + Math.random() - 0.5, 9);
     }
 
     function drawPlayer() {
@@ -642,12 +643,13 @@
     }
 
     function drawgrid() {
-        for (var x = xoffset - player.x; x < screenWidth; x += screenHeight / 20) {
+         graph.lineWidth = 1;
+        for (var x = xoffset - player.x; x < screenWidth; x += screenHeight / 18) {
             graph.moveTo(x, 0);
             graph.lineTo(x, screenHeight);
         }
 
-        for (var y = yoffset - player.y ; y < screenHeight; y += screenHeight / 20) {
+        for (var y = yoffset - player.y ; y < screenHeight; y += screenHeight / 18) {
             graph.moveTo(0, y);
             graph.lineTo(screenWidth, y);
         }

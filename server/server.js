@@ -367,7 +367,7 @@ function tickPlayer(currentPlayer) {
 
     currentPlayer.mass += c.foodMass * foodEaten.length;
     currentPlayer.radius = massToRadius(currentPlayer.mass);
-    currentPlayer.speed = 10;
+    currentPlayer.speed = 5.5;
     playerCircle.r = massToRadius(currentPlayer.mass);
 
     var otherUsers = users.filter(function(user) {
