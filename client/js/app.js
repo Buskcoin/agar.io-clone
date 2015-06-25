@@ -146,7 +146,7 @@
     c.addEventListener('mouseout', outOfBounds, false);
 
     // register when the mouse goes off the canvas
-    function outOfBounds() {
+    function ensureValueInRange() {
         if (!continuity) {
             target = { x : 0, y: 0 };
         }
