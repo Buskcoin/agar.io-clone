@@ -111,7 +111,7 @@
     };
 
     var playerConfig = {
-        border: 7,
+        border: 6,
         textColor: '#FFFFFF',
         textBorder: '#000000',
         textBorderSize: 3,
@@ -446,7 +446,7 @@
     }
 
     function massToRadius(mass) {
-        return Math.sqrt(mass / Math.PI) * 13;
+        return Math.sqrt(mass / Math.PI) * 12;
     }
 
     function drawCircle(centerX, centerY, radius, sides) {
@@ -473,7 +473,7 @@
         graph.strokeStyle = food.color.border || foodConfig.borderColor;
         graph.fillStyle = food.color.fill || foodConfig.fillColor;
         graph.lineWidth = foodConfig.border;
-        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(foodConfig.mass) * 2 + Math.random() - 0.5, );
+        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(foodConfig.mass) * 2, 9);
     }
 
     function drawPlayer() {
@@ -643,7 +643,10 @@
     }
 
     function drawgrid() {
-         graph.lineWidth = 1;
+        graph.lineWidth = 1;
+        graph.strokeStyle = '#000';
+        graph.globalAlpha = 0.15;
+        graph.beginPath();
         for (var x = xoffset - player.x; x < screenWidth; x += screenHeight / 18) {
             graph.moveTo(x, 0);
             graph.lineTo(x, screenHeight);
@@ -654,8 +657,8 @@
             graph.lineTo(screenWidth, y);
         }
 
-        graph.strokeStyle = '#ddd';
         graph.stroke();
+        graph.globalAlpha = 1;
     }
 
     function drawborder() {
