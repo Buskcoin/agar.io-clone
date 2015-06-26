@@ -133,16 +133,21 @@ function massToRadius(mass) {
 function movePlayer(player) {
     var dist = Math.sqrt(Math.pow(player.target.y, 2) + Math.pow(player.target.x, 2));
     var deg = Math.atan2(player.target.y, player.target.x);
-
-    var slowDown = Math.log(player.mass, c.slowBase) - initMassLog + 1;
-
-    var deltaY = player.speed * Math.sin(deg)/ slowDown;
-    var deltaX = player.speed * Math.cos(deg)/ slowDown;
-
     var radius = massToRadius(player.mass);
-    if (dist < (50 + radius)) {
-        deltaY *= dist / (50 + radius);
-        deltaX *= dist / (50 + radius);
+    var maxDistance = Math.pow(player.speed, 2) * 3;
+    var slowDown = Math.log(player.mass, c.slowBase) - initMassLog + 1;
+    if(dist > maxDistance) {
+        dist = maxDistance;
+    }
+    var deltaY = (dist/3)/player.speed * Math.sin(deg)/ slowDown;
+    var deltaX = (dist/3 )/player.speed * Math.cos(deg)/ slowDown;
+
+    
+    console.log(dist);
+    if (dist < radius/2) {
+        deltaY = 0;
+        deltaX = 0;
+        console.log(dist);
     }
 
     if (!isNaN(deltaY)) {
@@ -335,20 +340,24 @@ io.on('connection', function (socket) {
     });
 
     // Heartbeat function, update everytime
-    socket.on('0', function(target) {
+    socket.on('0', function(target, eject) {
         currentPlayer.lastHeartbeat = new Date().getTime();
         if (target.x !== currentPlayer.x || target.y !== currentPlayer.y) {
             currentPlayer.target = target;
+        }
+        if (eject){
+            currentPlayer.mass = currentPlayer.mass/2;
         }
     });
 });
 
 function tickPlayer(currentPlayer) {
 
-    if(currentPlayer.lastHeartbeat < new Date().getTime() - c.maxHeartbeatInterval) {
+    /*if(currentPlayer.lastHeartbeat < new Date().getTime() - c.maxHeartbeatInterval) {
         sockets[currentPlayer.id].emit('kick', 'Last heartbeat received over ' + c.maxHeartbeatInterval + ' ago.');
         sockets[currentPlayer.id].disconnect();
     }
+*/
 
     movePlayer(currentPlayer);
 
@@ -367,7 +376,7 @@ function tickPlayer(currentPlayer) {
 
     currentPlayer.mass += c.foodMass * foodEaten.length;
     currentPlayer.radius = massToRadius(currentPlayer.mass);
-    currentPlayer.speed = 5.5;
+    currentPlayer.speed = 6;
     playerCircle.r = massToRadius(currentPlayer.mass);
 
     var otherUsers = users.filter(function(user) {

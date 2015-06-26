@@ -12,6 +12,8 @@
     var inc = +1;
     var animLoopHandle;
     var spin = -Math.PI;
+    var eject = false;
+    var sca = 1;
 
     var debug = function(args) {
         if (console && console.log) {
@@ -152,6 +154,14 @@
         }
     }
 
+    c.onkeyup = function(e){
+    if(e.keyCode == 32){
+        eject = true;
+        console.log("spacebar");
+    }
+}
+
+
     var visibleBorderSetting = document.getElementById('visBord');
     visibleBorderSetting.onchange = toggleBorder;
 
@@ -201,6 +211,9 @@
         startPingTime = Date.now();
         socket.emit('ping');
     }
+
+
+
 
     function toggleDarkMode(args) {
         var LIGHT = '#EEEEEE';
@@ -385,7 +398,6 @@
         });
 
         socket.on('leaderboard', function (data) {
-            console.log("a");
             leaderboard = data.leaderboard;
             var status = 'Players: ' + data.players;
             for (var i = 0; i < leaderboard.length; i++) {
@@ -469,7 +481,6 @@
     }
 
     function drawFood(food) {
-
         graph.strokeStyle = food.color.border || foodConfig.borderColor;
         graph.fillStyle = food.color.fill || foodConfig.fillColor;
         graph.lineWidth = foodConfig.border;
@@ -479,6 +490,7 @@
     function drawPlayer() {
 
         var radius = massToRadius(player.mass);
+
         var x = 0;
         var y = 0;
         var circle = {
@@ -487,14 +499,15 @@
         };
         var points = 30 + ~~(player.mass/5);
         var increase = Math.PI * 2 / points;
-
+        
         graph.strokeStyle = 'hsl(' + player.hue + ', 80%, 40%)';
         graph.fillStyle = 'hsl(' + player.hue + ', 70%, 50%)';
         graph.lineWidth = playerConfig.border;
 
+
         var xstore = [];
         var ystore = [];
-
+            
         spin += 0.0;
 
         for (var i = 0; i < points; i++) {
@@ -516,6 +529,7 @@
          *if (wiggle <= radius / -3) inc = +1;
          *wiggle += inc;
          */
+
         for (i = 0; i < points; ++i) {
             if (i === 0) {
                 graph.beginPath();
@@ -557,7 +571,6 @@
     function valueInRange(min, max, value) {
         return Math.min(max, Math.max(min, value));
     }
-
 
     function drawEnemy(enemy) {
 
@@ -735,7 +748,7 @@
             graph.textAlign = 'center';
             graph.fillStyle = '#FFFFFF';
             graph.font = 'bold 30px sans-serif';
-            graph.fillText('You died!', screenWidth / 2, screenHeight / 2);
+            graph.fillText('You died! Please Wait...', screenWidth / 2, screenHeight / 2);
         }
         else if (!disconnected) {
             if (gameStart) {
@@ -747,6 +760,12 @@
                     drawFood(food);
                 });
 
+                       if ( eject == true) {
+                             sca = 0.9;
+                        graph.scale(sca,sca);
+                        eject = false;
+        }
+
                 if (borderDraw) {
                     drawborder();
                 }
@@ -757,7 +776,7 @@
 
                 drawPlayer();
 
-                socket.emit('0', target); // playerSendTarget Heartbeat
+                socket.emit('0', target, eject); // playerSendTarget Heartbeat
 
             } else {
                 graph.fillStyle = '#333333';
