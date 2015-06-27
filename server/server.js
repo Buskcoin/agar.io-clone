@@ -88,6 +88,7 @@ function addFood(toAdd) {
             x: position.x,
             y: position.y,
             radius: radius,
+            mass: Math.random() * 0.35 + 0.4,
             color: randomColor()
         });
     }
@@ -143,11 +144,10 @@ function movePlayer(player) {
     var deltaX = (dist/3 )/player.speed * Math.cos(deg)/ slowDown;
 
     
-    console.log(dist);
+
     if (dist < radius/2) {
         deltaY = 0;
         deltaX = 0;
-        console.log(dist);
     }
 
     if (!isNaN(deltaY)) {
@@ -340,13 +340,10 @@ io.on('connection', function (socket) {
     });
 
     // Heartbeat function, update everytime
-    socket.on('0', function(target, eject) {
+    socket.on('0', function(target) {
         currentPlayer.lastHeartbeat = new Date().getTime();
         if (target.x !== currentPlayer.x || target.y !== currentPlayer.y) {
             currentPlayer.target = target;
-        }
-        if (eject){
-            currentPlayer.mass = currentPlayer.mass/2;
         }
     });
 });
@@ -376,7 +373,7 @@ function tickPlayer(currentPlayer) {
 
     currentPlayer.mass += c.foodMass * foodEaten.length;
     currentPlayer.radius = massToRadius(currentPlayer.mass);
-    currentPlayer.speed = 6;
+    currentPlayer.speed = 6.25;
     playerCircle.r = massToRadius(currentPlayer.mass);
 
     var otherUsers = users.filter(function(user) {

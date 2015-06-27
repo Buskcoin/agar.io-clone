@@ -109,7 +109,7 @@
         border: 0,
         borderColor: '#f39c12',
         fillColor: '#f1c40f',
-        mass: 0.5
+        //mass: 0.5
     };
 
     var playerConfig = {
@@ -154,12 +154,18 @@
         }
     }
 
-    c.onkeyup = function(e){
-    if(e.keyCode == 32){
+    c.onkeydown = function(e){
+    if(e.keyCode == 32 && eject == false){
         eject = true;
         console.log("spacebar");
     }
 }
+    c.onkeyup = function(e) {
+        if(e.keyCode == 32) {
+            eject = false;
+            console.log("not spacebar");
+        }
+    }
 
 
     var visibleBorderSetting = document.getElementById('visBord');
@@ -458,7 +464,7 @@
     }
 
     function massToRadius(mass) {
-        return Math.sqrt(mass / Math.PI) * 12;
+        return Math.sqrt(mass / Math.PI) * 11.5;
     }
 
     function drawCircle(centerX, centerY, radius, sides) {
@@ -484,7 +490,7 @@
         graph.strokeStyle = food.color.border || foodConfig.borderColor;
         graph.fillStyle = food.color.fill || foodConfig.fillColor;
         graph.lineWidth = foodConfig.border;
-        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(foodConfig.mass) * 2, 9);
+        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(food.mass) * 2, 9);
     }
 
     function drawPlayer() {
@@ -760,11 +766,6 @@
                     drawFood(food);
                 });
 
-                       if ( eject == true) {
-                             sca = 0.9;
-                        graph.scale(sca,sca);
-                        eject = false;
-        }
 
                 if (borderDraw) {
                     drawborder();
@@ -776,7 +777,7 @@
 
                 drawPlayer();
 
-                socket.emit('0', target, eject); // playerSendTarget Heartbeat
+                socket.emit('0', target); // playerSendTarget Heartbeat
 
             } else {
                 graph.fillStyle = '#333333';
