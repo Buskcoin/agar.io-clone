@@ -12,6 +12,8 @@
     var inc = +1;
     var animLoopHandle;
     var spin = -Math.PI;
+    var eject = false;
+    var sca = 1;
 
     var debug = function(args) {
         if (console && console.log) {
@@ -99,7 +101,7 @@
     var startPingTime = 0;
 
     var chatCommands = {};
-    var backgroundColor = '#EEEEEE';
+    var backgroundColor = '#f2fbff';
 
     var toggleMassState = 0;
 
@@ -107,11 +109,11 @@
         border: 0,
         borderColor: '#f39c12',
         fillColor: '#f1c40f',
-        mass: 0.5
+        //mass: 0.5
     };
 
     var playerConfig = {
-        border: 5,
+        border: 6,
         textColor: '#FFFFFF',
         textBorder: '#000000',
         textBorderSize: 3,
@@ -151,6 +153,20 @@
             target = { x : 0, y: 0 };
         }
     }
+
+    c.onkeydown = function(e){
+    if(e.keyCode == 32 && eject == false){
+        eject = true;
+        console.log("spacebar");
+    }
+}
+    c.onkeyup = function(e) {
+        if(e.keyCode == 32) {
+            eject = false;
+            console.log("not spacebar");
+        }
+    }
+
 
     var visibleBorderSetting = document.getElementById('visBord');
     visibleBorderSetting.onchange = toggleBorder;
@@ -201,6 +217,9 @@
         startPingTime = Date.now();
         socket.emit('ping');
     }
+
+
+
 
     function toggleDarkMode(args) {
         var LIGHT = '#EEEEEE';
@@ -385,7 +404,6 @@
         });
 
         socket.on('leaderboard', function (data) {
-            console.log("a");
             leaderboard = data.leaderboard;
             var status = 'Players: ' + data.players;
             for (var i = 0; i < leaderboard.length; i++) {
@@ -446,7 +464,7 @@
     }
 
     function massToRadius(mass) {
-        return Math.sqrt(mass / Math.PI) * 10;
+        return Math.sqrt(mass / Math.PI) * 11.5;
     }
 
     function drawCircle(centerX, centerY, radius, sides) {
@@ -472,12 +490,13 @@
         graph.strokeStyle = food.color.border || foodConfig.borderColor;
         graph.fillStyle = food.color.fill || foodConfig.fillColor;
         graph.lineWidth = foodConfig.border;
-        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(foodConfig.mass), 10);
+        drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, massToRadius(food.mass) * 2, 9);
     }
 
     function drawPlayer() {
 
         var radius = massToRadius(player.mass);
+
         var x = 0;
         var y = 0;
         var circle = {
@@ -486,22 +505,23 @@
         };
         var points = 30 + ~~(player.mass/5);
         var increase = Math.PI * 2 / points;
-
+        
         graph.strokeStyle = 'hsl(' + player.hue + ', 80%, 40%)';
         graph.fillStyle = 'hsl(' + player.hue + ', 70%, 50%)';
         graph.lineWidth = playerConfig.border;
 
+
         var xstore = [];
         var ystore = [];
-
+            
         spin += 0.0;
 
         for (var i = 0; i < points; i++) {
 
             x = radius * Math.cos(spin) + circle.x;
             y = radius * Math.sin(spin) + circle.y;
-            x = contain(-player.x + screenWidth / 2, gameWidth - player.x + screenWidth / 2, x);
-            y = contain(-player.y + screenHeight / 2, gameHeight - player.y + screenHeight / 2, y);
+            x = valueInRange(-player.x + screenWidth / 2, gameWidth - player.x + screenWidth / 2, x);
+            y = valueInRange(-player.y + screenHeight / 2, gameHeight - player.y + screenHeight / 2, y);
 
             spin += increase;
 
@@ -515,6 +535,7 @@
          *if (wiggle <= radius / -3) inc = +1;
          *wiggle += inc;
          */
+
         for (i = 0; i < points; ++i) {
             if (i === 0) {
                 graph.beginPath();
@@ -553,10 +574,9 @@
         }
     }
 
-    function contain(min, max, value) {
+    function valueInRange(min, max, value) {
         return Math.min(max, Math.max(min, value));
     }
-
 
     function drawEnemy(enemy) {
 
@@ -642,18 +662,22 @@
     }
 
     function drawgrid() {
-        for (var x = xoffset - player.x; x < screenWidth; x += screenHeight / 20) {
+        graph.lineWidth = 1;
+        graph.strokeStyle = '#000';
+        graph.globalAlpha = 0.15;
+        graph.beginPath();
+        for (var x = xoffset - player.x; x < screenWidth; x += screenHeight / 18) {
             graph.moveTo(x, 0);
             graph.lineTo(x, screenHeight);
         }
 
-        for (var y = yoffset - player.y ; y < screenHeight; y += screenHeight / 20) {
+        for (var y = yoffset - player.y ; y < screenHeight; y += screenHeight / 18) {
             graph.moveTo(0, y);
             graph.lineTo(screenWidth, y);
         }
 
-        graph.strokeStyle = '#ddd';
         graph.stroke();
+        graph.globalAlpha = 1;
     }
 
     function drawborder() {
@@ -730,7 +754,7 @@
             graph.textAlign = 'center';
             graph.fillStyle = '#FFFFFF';
             graph.font = 'bold 30px sans-serif';
-            graph.fillText('You died!', screenWidth / 2, screenHeight / 2);
+            graph.fillText('You died! Please Wait...', screenWidth / 2, screenHeight / 2);
         }
         else if (!disconnected) {
             if (gameStart) {
@@ -741,6 +765,7 @@
                 foods.forEach(function(food) {
                     drawFood(food);
                 });
+
 
                 if (borderDraw) {
                     drawborder();
