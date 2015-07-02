@@ -361,8 +361,9 @@ function gameloop() {
         }
 
         for (i = 0; i < users.length; i++) {
-            if (users[i].mass >= 10){
+            if (users[i].mass * (1 - (c.massLossRate / 1000)) > c.defaultPlayerMass){
             users[i].mass = users[i].mass * (1 - (c.massLossRate / 1000));
+            console.log(users[i].mass)
             }
         }
     }
