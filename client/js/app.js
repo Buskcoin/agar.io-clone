@@ -1,36 +1,3 @@
-<<<<<<< HEAD
-/* global io */
-(function() {
-    'use strict';
-
-    var playerName;
-    var playerNameInput = document.getElementById('playerNameInput');
-    var socket;
-    var reason;
-    var KEY_ENTER = 13;
-    var borderDraw = false;
-    var animLoopHandle;
-    var spin = -Math.PI;
-    var enemySpin = -Math.PI;
-
-    var debug = function(args) {
-        if (console && console.log) {
-            console.log(args);
-        }
-    };
-
-    function startGame() {
-        playerName = playerNameInput.value.replace(/(<([^>]+)>)/ig, '');
-        document.getElementById('startMenuWrapper').style.maxHeight = '0px';
-        document.getElementById('gameAreaWrapper').style.opacity = 1;
-        if (!socket) {
-            socket = io();
-            setupSocket(socket);
-        }
-        if (!animLoopHandle)
-            animloop();
-        socket.emit('respawn');
-=======
 var io = require('socket.io-client');
 
 var playerName;
@@ -47,7 +14,6 @@ var spin = -Math.PI;
 var debug = function(args) {
     if (console && console.log) {
         console.log(args);
->>>>>>> 4b9003331cb4643d464aef0b3d43cacd28bd0257
     }
 };
 
@@ -525,25 +491,10 @@ function drawPlayer() {
 
     for (var i = 0; i < points; i++) {
 
-<<<<<<< HEAD
-        }
-
-        for (i = 0; i < points; ++i) {
-            if (i === 0) {
-                graph.beginPath();
-                graph.moveTo(xstore[i], ystore[i]);
-            } else if (i > 0 && i < points - 1) {
-                graph.lineTo(xstore[i], ystore[i]);
-            } else {
-                graph.lineTo(xstore[i], ystore[i]);
-                graph.lineTo(xstore[0], ystore[0]);
-            }
-=======
         x = player.radius * Math.cos(spin) + circle.x;
         y = player.radius * Math.sin(spin) + circle.y;
         x = valueInRange(-player.x + screenWidth / 2, gameWidth - player.x + screenWidth / 2, x);
         y = valueInRange(-player.y + screenHeight / 2, gameHeight - player.y + screenHeight / 2, y);
->>>>>>> 4b9003331cb4643d464aef0b3d43cacd28bd0257
 
         spin += increase;
 
@@ -611,69 +562,6 @@ function drawEnemy(enemy) {
         y: enemy.y - player.y + screenHeight / 2
     };
 
-<<<<<<< HEAD
-    function drawEnemy(enemy) {
-        var x = 0;
-        var y = 0;
-        var circle = {
-            x: enemy.x - player.x + screenWidth / 2,
-            y: enemy.y - player.y + screenHeight / 2
-        };
-
-        var points = 30 + ~~(enemy.mass/5);
-        var increase = Math.PI * 2 / points;
-
-        graph.strokeStyle = 'hsl(' + enemy.hue + ', 80%, 40%)';
-        graph.fillStyle = 'hsl(' + enemy.hue + ', 70%, 50%)';
-        graph.lineWidth = enemyConfig.border;
-
-        var xstore = [];
-        var ystore = [];
-
-        enemySpin += 0.0;
-
-        for (var i = 0; i < points; i++) {
-
-            x = enemy.radius * Math.cos(enemySpin) + circle.x;
-            y = enemy.radius * Math.sin(enemySpin) + circle.y;
-            
-            x = valueInRange(-enemy.x - player.x + screenWidth/2 + (enemy.radius/3), gameWidth - enemy.x + gameWidth - player.x + screenWidth/2 - (enemy.radius/3), x);
-            y = valueInRange(-enemy.y - player.y + screenHeight/2 + (enemy.radius/3), gameHeight - enemy.y + gameHeight - player.y + screenHeight/2 - (enemy.radius/3) , y);
-
-            enemySpin += increase;
-
-
-
-            xstore[i] = x;
-            ystore[i] = y;
-
-        }
-
-        for (i = 0; i < points; ++i) {
-            if (i === 0) {
-                graph.beginPath();
-                graph.moveTo(xstore[i], ystore[i]);
-            } else if (i > 0 && i < points - 1) {
-                graph.lineTo(xstore[i], ystore[i]);
-            } else {
-                graph.lineTo(xstore[i], ystore[i]);
-                graph.lineTo(xstore[0], ystore[0]);
-            }
-
-        }
-        graph.lineJoin = 'round';
-        graph.lineCap = 'round';
-        graph.fill();
-        graph.stroke();
-
-
-
-    
-
-        var fontSize = (enemy.radius / 2);
-        graph.lineWidth = enemyConfig.textBorderSize;
-        graph.miterLimit = 1;
-=======
     graph.strokeStyle = 'hsl(' + enemy.hue + ', 80%, 40%)';
     graph.fillStyle = 'hsl(' + enemy.hue + ', 70%, 50%)';
     graph.lineWidth = enemyConfig.border;
@@ -719,7 +607,6 @@ function drawEnemy(enemy) {
         if (wiggle <= enemy.radius / -3) inc = +1;
         wiggle += inc;
         graph.beginPath();
->>>>>>> 4b9003331cb4643d464aef0b3d43cacd28bd0257
         graph.lineJoin = 'round';
         graph.moveTo(p.x, p.y);
         graph.bezierCurveTo(p.x + wiggle / 3, p.y - wiggle / 3, q.x - wiggle / 3, q.y + wiggle / 3, q.x, q.y);
@@ -831,17 +718,10 @@ function animloop() {
     gameLoop();
 }
 
-<<<<<<< HEAD
-                for (var i = 0; i < enemies.length; i++) {
-                    if(enemies[i].mass <= player.mass)
-                        drawEnemy(enemies[i]);
-                }
-=======
 function gameLoop() {
     if (died) {
         graph.fillStyle = '#333333';
         graph.fillRect(0, 0, screenWidth, screenHeight);
->>>>>>> 4b9003331cb4643d464aef0b3d43cacd28bd0257
 
         graph.textAlign = 'center';
         graph.fillStyle = '#FFFFFF';
@@ -854,18 +734,9 @@ function gameLoop() {
             graph.fillRect(0, 0, screenWidth, screenHeight);
             drawgrid();
 
-<<<<<<< HEAD
-                for (var i = 0; i < enemies.length; i++) {
-                    if(enemies[i].mass > player.mass)
-                        drawEnemy(enemies[i]);
-                }
-
-                socket.emit('0', target); // playerSendTarget Heartbeat
-=======
             foods.forEach(function(food) {
                 drawFood(food);
             });
->>>>>>> 4b9003331cb4643d464aef0b3d43cacd28bd0257
 
             if (borderDraw) {
                 drawborder();
