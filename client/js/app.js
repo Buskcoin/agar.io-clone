@@ -644,6 +644,7 @@
         graph.stroke();
         graph.globalAlpha = 1;
     }
+}
 
     function drawborder() {
         graph.strokeStyle = playerConfig.borderColor;
@@ -714,6 +715,7 @@
         if (died) {
             graph.fillStyle = '#333333';
             graph.fillRect(0, 0, screenWidth, screenHeight);
+            drawgrid();
 
             graph.textAlign = 'center';
             graph.fillStyle = '#FFFFFF';
@@ -764,24 +766,32 @@
             graph.textAlign = 'center';
             graph.fillStyle = '#FFFFFF';
             graph.font = 'bold 30px sans-serif';
-            if (kicked) {
-                if (reason !== '') {
-                    graph.fillText('You were kicked for reason:', screenWidth / 2, screenHeight / 2 - 20);
-                    graph.fillText(reason, screenWidth / 2, screenHeight / 2 + 20);
-                }
-                else {
-                    graph.fillText('You were kicked!', screenWidth / 2, screenHeight / 2);
-                }
+            graph.fillText('Game Over!', screenWidth / 2, screenHeight / 2);
+        }
+    } else {
+        graph.fillStyle = '#333333';
+        graph.fillRect(0, 0, screenWidth, screenHeight);
+
+        graph.textAlign = 'center';
+        graph.fillStyle = '#FFFFFF';
+        graph.font = 'bold 30px sans-serif';
+        if (kicked) {
+            if (reason !== '') {
+                graph.fillText('You were kicked for reason:', screenWidth / 2, screenHeight / 2 - 20);
+                graph.fillText(reason, screenWidth / 2, screenHeight / 2 + 20);
             }
             else {
-                  graph.fillText('Disconnected!', screenWidth / 2, screenHeight / 2);
+                graph.fillText('You were kicked!', screenWidth / 2, screenHeight / 2);
             }
         }
+        else {
+              graph.fillText('Disconnected!', screenWidth / 2, screenHeight / 2);
+        }
     }
+}
 
-    window.addEventListener('resize', function() {
-        player.screenWidth = c.width = screenWidth = window.innerWidth;
-        player.screenHeight = c.height = screenHeight = window.innerHeight;
-        socket.emit('windowResized', { screenWidth: screenWidth, screenHeight: screenHeight });
-    }, true);
-})();
+window.addEventListener('resize', function() {
+    player.screenWidth = c.width = screenWidth = window.innerWidth;
+    player.screenHeight = c.height = screenHeight = window.innerHeight;
+    socket.emit('windowResized', { screenWidth: screenWidth, screenHeight: screenHeight });
+}, true);
