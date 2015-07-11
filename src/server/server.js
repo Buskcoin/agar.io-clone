@@ -13,6 +13,13 @@ var c = require('../../config.json');
 // Import utilities
 var util = require('./lib/util');
 
+// Import quadtree
+var quadtree= require('./lib/quadtree');
+
+var args = {x : 0, y : 0, h : c.gameHeight, w : c.gameWidth, maxChildren : 0, maxDepth : 5};
+console.log(args);
+
+var tree = quadtree.QUAD.init(args);
 
 
 var users = [];
@@ -90,14 +97,6 @@ function movePlayer(player) {
     }
 }
 
-// Import quadtree
-var quadtree= require('./lib/quadtree');
-
-var args = {x : 0, y : 0, h : c.gameHeight, w : c.gameWidth, maxChildren : 0, maxDepth : 5};
-console.log(args);
-
-var tree = quadtree.QUAD.init(args);
-
 function balanceMass() {
     var totalMass = food.length * c.foodMass +
         users
@@ -111,14 +110,14 @@ function balanceMass() {
     var foodToRemove = -Math.max(foodDiff, maxFoodDiff);
 
     if (foodToAdd > 0) {
-        console.log('adding ' + foodToAdd + ' food to level');
+        //console.log('adding ' + foodToAdd + ' food to level');
         addFood(foodToAdd);
-        console.log('mass rebalanced');
+        //console.log('mass rebalanced');
     }
     else if (foodToRemove > 0) {
-        console.log('removing ' + foodToRemove + ' food from level');
+        //console.log('removing ' + foodToRemove + ' food from level');
         removeFood(foodToRemove);
-        console.log('mass rebalanced');
+        //console.log('mass rebalanced');
     }
 }
 
