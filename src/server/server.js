@@ -13,6 +13,11 @@ var c = require('../../config.json');
 // Import utilities
 var util = require('./lib/util');
 
+// Import quadtree
+var quadtree= require('./lib/quadtree');
+
+
+
 var users = [];
 var food = [];
 var sockets = {};
