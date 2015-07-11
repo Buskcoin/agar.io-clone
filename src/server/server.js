@@ -13,9 +13,6 @@ var c = require('../../config.json');
 // Import utilities
 var util = require('./lib/util');
 
-// Import quadtree
-var quadtree= require('./lib/quadtree');
-
 
 
 var users = [];
@@ -93,6 +90,14 @@ function movePlayer(player) {
     }
 }
 
+// Import quadtree
+var quadtree= require('./lib/quadtree');
+
+var args = {x : 0, y : 0, h : c.gameHeight, w : c.gameWidth, maxChildren : 0, maxDepth : 5};
+console.log(args);
+
+var tree = quadtree.QUAD.init(args);
+
 function balanceMass() {
     var totalMass = food.length * c.foodMass +
         users
@@ -127,6 +132,8 @@ io.on('connection', function (socket) {
         id: socket.id,
         x: position.x,
         y: position.y,
+        w: radius,
+        h: radius,
         radius: radius,
         mass: c.defaultPlayerMass,
         hue: Math.round(Math.random() * 360),
@@ -295,23 +302,24 @@ function tickPlayer(currentPlayer) {
     currentPlayer.radius = util.massToRadius(currentPlayer.mass);
     playerCircle.r = currentPlayer.radius;
 
-    var otherUsers = users.filter(function(user) {
-        if(user.mass > 10)
-        return user.id !== currentPlayer.id;
-    });
+    tree.clear();
+    tree.insert(users);
     var playerCollisions = [];
 
-    otherUsers.forEach(function(user) {
+    var otherUsers =  tree.retrieve(currentPlayer, function(user) {
+        if(user.mass > 10 && user.id !== currentPlayer.id) {
         var response = new SAT.Response();
         var collided = SAT.testCircleCircle(playerCircle,
             new C(new V(user.x, user.y), user.radius),
             response);
-
+        
         if (collided) {
             response.aUser = currentPlayer;
             response.bUser = user;
             playerCollisions.push(response);
         }
+        }
+
     });
 
     playerCollisions.forEach(function(collision) {
