@@ -14,13 +14,12 @@ var c = require('../../config.json');
 var util = require('./lib/util');
 
 // Import quadtree
-var quadtree= require('./lib/quadtree');
+var quadtree= require('../../quadtree');
 
-var args = {x : 0, y : 0, h : c.gameHeight, w : c.gameWidth, maxChildren : 0, maxDepth : 5};
+var args = {x : 0, y : 0, h : c.gameHeight, w : c.gameWidth, maxChildren : 1, maxDepth : 5};
 console.log(args);
 
 var tree = quadtree.QUAD.init(args);
-
 
 var users = [];
 var food = [];
@@ -311,7 +310,6 @@ function tickPlayer(currentPlayer) {
         var collided = SAT.testCircleCircle(playerCircle,
             new C(new V(user.x, user.y), user.radius),
             response);
-        
         if (collided) {
             response.aUser = currentPlayer;
             response.bUser = user;
@@ -444,3 +442,5 @@ if (process.env.OPENSHIFT_NODEJS_IP !== undefined) {
         console.log('listening on *:' + c.port);
     });
 }
+
+
