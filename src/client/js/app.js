@@ -10,6 +10,16 @@ var animLoopHandle;
 var spin = -Math.PI;
 var enemySpin = -Math.PI;
 var mobile = false;
+var update = false;
+
+var log = (function () {
+    var log = Math.log;
+    return function (n, base) {
+        return log(n) / (base ? log(base) : 1);
+    };
+})();
+
+var initMassLog = log(10, 4.5);
 
 var debug = function(args) {
     if (console && console.log) {
@@ -133,6 +143,7 @@ var player = {
     screenHeight: screenHeight,
     target: {x: screenWidth / 2, y: screenHeight / 2}
 };
+var play = player;
 
 var foods = [];
 var enemies = [];
@@ -432,6 +443,7 @@ function setupSocket(socket) {
 
     // Handle movement
     socket.on('serverTellPlayerMove', function (playerData, userData, foodsList) {
+        update = true;
         var xoffset = player.x - playerData.x;
         var yoffset = player.y - playerData.y;
 
@@ -469,6 +481,43 @@ function setupSocket(socket) {
     });
 }
 
+function movePlayer(play) {
+    var dist = Math.sqrt(Math.pow(player.target.y, 2) + Math.pow(player.target.x, 2));
+    var deg = Math.atan2(player.target.y, player.target.x);
+
+    var slowDown = log(player.mass, 4.5) - initMassLog + 1;
+
+    var deltaY = player.speed * Math.sin(deg)/ slowDown;
+    var deltaX = player.speed * Math.cos(deg)/ slowDown;
+
+    if (dist < (50 + player.radius)) {
+        deltaY *= dist / (50 + player.radius);
+        deltaX *= dist / (50 + player.radius);
+    }
+
+    if (!isNaN(deltaY)) {
+        play.y += deltaY;
+    }
+    if (!isNaN(deltaX)) {
+        play.x += deltaX;
+    }
+
+    var borderCalc = player.radius / 3;
+
+    if (play.x > c.gameWidth - borderCalc) {
+        play.x = c.gameWidth - borderCalc;
+    }
+    if (play.y > c.gameHeight - borderCalc) {
+        play.y = c.gameHeight - borderCalc;
+    }
+    if (play.x < borderCalc) {
+        play.x = borderCalc;
+    }
+    if (play.y < borderCalc) {
+        play.y = borderCalc;
+    }
+}
+
 function drawCircle(centerX, centerY, radius, sides) {
     var theta = 0;
     var x = 0;
@@ -496,6 +545,8 @@ function drawFood(food) {
 }
 
 function drawPlayer() {
+    if(update === true)
+        play = player;
     var x = 0;
     var y = 0;
     var circle = {
@@ -518,8 +569,8 @@ function drawPlayer() {
 
         x = player.radius * Math.cos(spin) + circle.x;
         y = player.radius * Math.sin(spin) + circle.y;
-        x = valueInRange(-player.x + screenWidth / 2, gameWidth - player.x + screenWidth / 2, x);
-        y = valueInRange(-player.y + screenHeight / 2, gameHeight - player.y + screenHeight / 2, y);
+        x = valueInRange(-play.x + screenWidth / 2, gameWidth - play.x + screenWidth / 2, x);
+        y = valueInRange(-play.y + screenHeight / 2, gameHeight - play.y + screenHeight / 2, y);
 
         spin += increase;
 
@@ -767,7 +818,7 @@ function gameLoop() {
                 if (enemies[i].mass <= player.mass) 
                     drawEnemy(enemies[i]);
             }
-
+            movePlayer(play);
             drawPlayer();
 
             for (var j = 0; j < enemies.length; j++) {
