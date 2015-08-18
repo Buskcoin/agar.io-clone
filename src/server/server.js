@@ -428,7 +428,7 @@ function sendUpdates() {
 
 setInterval(moveloop, 1000 / 60);
 setInterval(gameloop, 1000);
-setInterval(sendUpdates, 1000 / c.networkUpdateFactor);
+setInterval(sendUpdates, 40 / c.networkUpdateFactor);
 
 // Don't touch on ip
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || process.env.IP || '127.0.0.1';

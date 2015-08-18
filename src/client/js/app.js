@@ -541,7 +541,7 @@ function drawFood(food) {
     graph.strokeStyle = food.color.border || foodConfig.borderColor;
     graph.fillStyle = food.color.fill || foodConfig.fillColor;
     graph.lineWidth = foodConfig.border;
-    drawCircle(food.x - player.x + screenWidth / 2, food.y - player.y + screenHeight / 2, food.radius, 9);
+    drawCircle(food.x - play.x + screenWidth / 2, food.y - play.y + screenHeight / 2, food.radius, 9);
 }
 
 function drawPlayer() {
