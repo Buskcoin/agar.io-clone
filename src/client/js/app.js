@@ -704,12 +704,12 @@ function drawgrid() {
      graph.globalAlpha = 0.15;
      graph.beginPath();
 
-    for (var x = xoffset - player.x; x < screenWidth; x += screenHeight / 18) {
+    for (var x = xoffset - play.x; x < screenWidth; x += screenHeight / 18) {
         graph.moveTo(x, 0);
         graph.lineTo(x, screenHeight);
     }
 
-    for (var y = yoffset - player.y ; y < screenHeight; y += screenHeight / 18) {
+    for (var y = yoffset - play.y ; y < screenHeight; y += screenHeight / 18) {
         graph.moveTo(0, y);
         graph.lineTo(screenWidth, y);
     }
